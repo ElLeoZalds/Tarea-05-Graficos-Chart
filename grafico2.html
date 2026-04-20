@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráfico 2</title>
+  </head>
+  <body>
+    <!-- *GRÁFICO 2* -> En el eje X considerar los días de la semana, luego, guardar en un archivo JSON los datos para el eje Y. 
+        La aplicación deberá leer los datos y cargarlos en gráfico. -->
+
+    <div>
+      <canvas id="lienzo"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        const lienzo = document.getElementById("lienzo");
+
+        // Valores del eje y
+        const dias = [
+          "Lunes",
+          "Martes",
+          "Miércoles",
+          "Jueves",
+          "Viernes",
+          "Sábado",
+          "Domingo",
+        ];
+
+        // trycatch para que lea el archivo .json
+        try {
+          // Busca el archivo datos.json
+          const respuesta = await fetch("datos.json");
+
+          // Recupera los datos para usarlo en el gráfico
+          const datosRecuperados = await respuesta.json();
+
+          //Construir Grafico => new Chart(lienzo, { configuraciones })
+          const grafico = new Chart(lienzo, {
+            type: "bar",
+            data: {
+              labels: dias,
+              datasets: [
+                {
+                  label: "Registro Semanal",
+                  data: datosRecuperados.valoresY,
+                  borderWidth: 2,
+                },
+              ],
+            },
+          });
+        } catch (e) {
+          console.error("Error en el servidor", e);
+        }
+      });
+    </script>
+  </body>
+</html>
