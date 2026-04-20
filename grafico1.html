@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráfico 1</title>
+  </head>
+  <body>
+    <!-- *GRÁFICO 1* -> En el eje X considerar el nombre de 5 lenguajes de programación, 
+        construir además 5 cajas de texto que suministrarán los valores al eje Y -->
+
+    <!-- Cajas de texto de cada lenguaje -->
+    <input type="number" id="valPython" value="15" />
+    <input type="number" id="valJava" value="15" />
+    <input type="number" id="valJavaScript" value="20" />
+    <input type="number" id="valPHP" value="15" />
+    <input type="number" id="valTypeScript" value="10" />
+
+    <button id="actualizar">Actualizar Gráfico</button>
+
+    <div>
+      <canvas id="lienzo"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const lienzo = document.getElementById("lienzo");
+
+        // Valores del eje X
+        const lenguaje = ["Python", "Java", "JavaScript", "PHP", "TypeScript"];
+
+        // Valores del eje y
+        const valor = [
+          document.getElementById("valPython").value,
+          document.getElementById("valJava").value,
+          document.getElementById("valJavaScript").value,
+          document.getElementById("valPHP").value,
+          document.getElementById("valTypeScript").value,
+        ];
+
+        //Construir Grafico => new Chart(lienzo, { configuraciones })
+        const grafico = new Chart(lienzo, {
+          type: "bar",
+          data: {
+            labels: lenguaje,
+            datasets: [
+              {
+                label: "Popularidad",
+                data: valor,
+                borderWidth: 2,
+              },
+            ],
+          },
+        });
+
+        document
+          .getElementById("actualizar")
+          .addEventListener("click", function () {
+            // Volvemos a leer los inputs (convertidos a números)
+            const nuevosValores = [
+              Number(document.getElementById("valPython").value),
+              Number(document.getElementById("valJava").value),
+              Number(document.getElementById("valJavaScript").value),
+              Number(document.getElementById("valPHP").value),
+              Number(document.getElementById("valTypeScript").value),
+            ];
+
+            // Agregamos datos nuevos al gráfico y actualizamos
+            grafico.data.datasets[0].data = nuevosValores;
+            grafico.update();
+          });
+      });
+    </script>
+  </body>
+</html>
