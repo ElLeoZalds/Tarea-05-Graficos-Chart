@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Búsqueda RUC</title>
+  </head>
+  <body>
+    <h2>Búsqueda de Empresa por RUC</h2>
+
+    <input type="text" id="ruc" placeholder="Ingrese RUC" maxlength="11" />
+    <button onclick="buscarRUC()">Buscar</button>
+
+    <h3>Resultado:</h3>
+    <p id="resultado"></p>
+
+    <script>
+      async function buscarRUC() {
+        const ruc = document.getElementById("ruc").value;
+        const resultado = document.getElementById("resultado");
+
+        if (ruc.length !== 11 || isNaN(ruc)) {
+          resultado.innerText = "Ingrese un RUC válido (11 números)";
+          return;
+        }
+
+        resultado.innerText = "Buscando...";
+
+        try {
+          const response = await fetch(
+            `https://api.decolecta.com/v1/sunat/ruc?numero=${ruc}`,
+            {
+              headers: {
+                Authorization: "Bearer ",
+              },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error("Error HTTP: " + response.status);
+          }
+
+          const data = await response.json();
+
+          if (data.success) {
+            resultado.innerText =
+              "Razón Social: " +
+              data.data.razon_social +
+              "\n" +
+              "Estado: " +
+              data.data.estado +
+              "\n" +
+              "Dirección: " +
+              data.data.direccion +
+              "\n" +
+              "Distrito: " +
+              data.data.distrito +
+              "\n" +
+              "Provincia: " +
+              data.data.provincia +
+              "\n" +
+              "Departamento: " +
+              data.data.departamento;
+          } else {
+            resultado.innerText = "No se encontró la empresa";
+          }
+        } catch (error) {
+          resultado.innerText = "Error al consultar la API";
+          console.error(error);
+        }
+      }
+    </script>
+  </body>
+</html>
