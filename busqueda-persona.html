@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Búsqueda DNI</title>
+  </head>
+  <body>
+    <h2>Búsqueda de Persona por DNI</h2>
+
+    <input type="text" id="dni" placeholder="Ingrese DNI" maxlength="8" />
+    <button onclick="buscarDNI()">Buscar</button>
+
+    <h3>Resultado:</h3>
+    <p id="resultado"></p>
+
+    <script>
+      async function buscarDNI() {
+        const dni = document.getElementById("dni").value;
+        const resultado = document.getElementById("resultado");
+
+        if (dni.length !== 8 || isNaN(dni)) {
+          resultado.innerText = "Ingrese un DNI válido (8 números)";
+          return;
+        }
+
+        resultado.innerText = "Buscando...";
+
+        try {
+          const response = await fetch(
+            `https://api.decolecta.com/v1/reniec/dni?numero=${dni}`,
+            {
+              headers: {
+                Authorization:
+                  "Bearer ",
+              },
+            },
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            resultado.innerText =
+              "Nombres: " +
+              data.data.nombres +
+              "\n" +
+              "Apellidos: " +
+              data.data.apellido_paterno +
+              " " +
+              data.data.apellido_materno;
+          } else {
+            resultado.innerText = "No se encontró la persona";
+          }
+        } catch (error) {
+          resultado.innerText = "Error al consultar la API";
+          console.error(error);
+        }
+      }
+    </script>
+  </body>
+</html>
